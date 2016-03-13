@@ -1,0 +1,26 @@
+@media all {
+
+  // External class fix for Outlook.com
+  .ExternalClass {
+    width: 100%;
+  }
+
+  .ExternalClass,
+  .ExternalClass p,
+  .ExternalClass span,
+  .ExternalClass font,
+  .ExternalClass td,
+  .ExternalClass div {
+    line-height: 100%;
+  }
+
+  // Blue link fix for iOS
+  .apple-link a {
+    color: inherit !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+    text-decoration: none !important;
+  }
+}
