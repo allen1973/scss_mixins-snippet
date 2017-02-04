@@ -1,0 +1,16 @@
+<snippet>
+    <content><![CDATA[
+@include screen('tablet') {
+        $1
+     }
+     @include screen('desktop') {
+
+     }
+     @include screen('mobile') {
+     	
+     }
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>include screen(tablet)</description>
+    <scope>source.css</scope>
+</snippet>

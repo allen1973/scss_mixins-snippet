@@ -1,0 +1,9 @@
+
+<snippet>
+    <content><![CDATA[
+@include center-block;
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>center-block</description>
+      <scope>source.css</scope>
+</snippet>

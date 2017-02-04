@@ -1,0 +1,8 @@
+<snippet>
+    <content><![CDATA[
+@include fixed(top 0 left 0);
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>fixed</description>
+    <scope>source.css</scope>
+</snippet>

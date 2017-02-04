@@ -1,0 +1,9 @@
+
+<snippet>
+    <content><![CDATA[
+@include absolute(top 100% left 0);
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>include absolute</description>
+      <scope>source.css</scope>
+</snippet>

@@ -1,0 +1,9 @@
+
+<snippet>
+    <content><![CDATA[
+@include center-vertically;
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>垂直居中</description>
+    <scope>source.css</scope>
+</snippet>

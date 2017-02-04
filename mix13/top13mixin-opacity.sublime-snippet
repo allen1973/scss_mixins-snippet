@@ -1,0 +1,9 @@
+
+<snippet>
+    <content><![CDATA[
+@include opacity(.4);
+    	]]></content>
+    <tabTrigger>混</tabTrigger>
+    <description>opacity</description>
+    <scope>source.css</scope>
+</snippet>
