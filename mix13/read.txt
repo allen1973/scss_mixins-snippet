@@ -1,1 +1,369 @@
-test
+http://w3bits.com/sass-mixins/
+
+Adding dimensions
+A simple mixin to give dimensions to a box.
+
+@mixin box($width, $height=$width) {
+  width: $width;
+  height: $height;
+}Usage
+You must provide at least one parameter to make it work:
+
+.square {
+  @include box(50px);
+}
+
+.rectangle {
+  @include box(100px, 50px);
+}Output
+.square {
+  width: 50px;
+  height: 50px;
+}
+
+.rectangle {
+  width: 100px;
+  height: 50px;
+}
+Clearfix
+Implementing micro-clearfix hack the SASS way.
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}Usage
+.cf {
+  @include clearfix;
+}Output
+.cf:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+Opacity
+CSS Opacity with fallback for IE8+.
+
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity = $opacity-ie); //IE8
+}Usage
+.fade {
+  @include opacity(.4);
+}Output
+.fade {
+  opacity: .4;
+  filter: alpha(opacity = 40); //IE8
+}
+Positioning
+Easy and quick CSS positioning, thanks to Hugo Giraudel.
+
+@mixin position($position, $args) {
+  @each $o in top right bottom left {
+    $i: index($args, $o);
+    @if $i and $i + 1 <= length($args) and type-of(nth($args, $i + 1)) == number {
+      #{$o}: nth($args, $i + 1);
+    }
+  }
+  position: $position;
+}
+
+// Positioning helpers
+@mixin absolute($args: '') {
+  @include position(absolute, $args);
+}
+
+@mixin fixed($args: '') {
+  @include position(fixed, $args);
+}
+
+@mixin relative($args: '') {
+  @include position(relative, $args);
+}Usage
+You should only use absolute(), relative(), and fixed() functions to add the respective positioning to the elements. Parameters are optional and can be given as demonstrated below:
+
+.menu li {
+  @include relative;
+}
+
+.sub-menu {
+  @include absolute(top 100% left 0);
+}
+
+.sticky-bar {
+  @include fixed(top 0 left 0);
+}
+Rem units Implementing CSS rem units with pixel fallback.
+@mixin font-size($size, $base: 16) {
+  font-size: $size; // fallback for old browsers
+  font-size: ($size / $base) * 1rem;
+}Usage
+body {
+  @include font-size(16);
+}
+
+p {
+  @include font-size(12, 10);
+}
+You must provide at least one value when using the mixin, this value will be treated as the font-size and will be outputted as processed with the default base font-size (16). Or you may provide a different base value if you wish to.
+
+Output
+body {
+  font-size: 16px;
+  font-size: 1rem;
+}
+Vendor prefixing
+Vendor prefixing made easy with full control over prefixes, customize as you use:
+
+@mixin prefix($property, $value, $vendors: webkit moz ms o, $default: true) {
+  @if $vendors {
+    @each $vendor in $vendors {
+      #{"-" + $vendor + "-" + $property}: #{$value};
+    }
+  }
+  @if $default {
+    #{$property}: #{$value};
+  }
+}Usage
+html {
+  @include prefix('box-sizing', 'border-box', moz webkit);
+}
+
+*,
+*:before,
+*:after {
+  @include prefix('box-sizing', 'inherit', moz webkit);
+}
+As shown above, you may provide the vendor prefixes as the 3rd parameter in the mixin, each separated by a space.
+
+Output
+html {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  -moz-box-sizing: inherit;
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+Media queries
+Handling CSS Media queries was never this easy:
+
+@mixin screen($size) {
+  $desktop: "(min-width: 1024px)";
+  $tablet: "(min-width: 768px) and (max-width: 1023px)";
+  $mobile: "(max-width: 767px)";
+  @if $size == desktop {
+    @media only screen and #{$desktop} {
+      @content;
+    }
+  }
+  @else if $size == tablet {
+    @media only screen and #{$tablet} {
+      @content;
+    }
+  }
+  @else if $size == mobile {
+    @media only screen and #{$mobile} {
+      @content;
+    }
+  }
+  @else {
+    @media only screen and #{$size} {
+      @content;
+    }
+  }
+}Usage
+.wrapper {
+  margin: 0 auto;
+  width: 100%;
+  @include screen('tablet') {
+    width: 90%;
+  }
+
+  @include screen('desktop') {
+    width: 85%;
+  }
+}Output
+.wrapper {
+  margin: 0 auto;
+  width: 100%;
+}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .wrapper {
+    width: 90%;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .wrapper {
+    width: 85%;
+  }
+}
+In place of 'mobile', 'tablet', or 'desktop', you may also provide a custom breakpoint values, for eg:
+
+.wrapper {
+  @include screen('(min-width: 1367px)') {
+    width: 1280px;
+  }
+}
+Retina Images
+Show the retina images on retina-friendly devices only:
+
+@mixin retina($image, $width, $height) {
+  @media (min--moz-device-pixel-ratio: 1.3),
+  (-o-min-device-pixel-ratio: 2.6/2),
+  (-webkit-min-device-pixel-ratio: 1.3),
+  (min-device-pixel-ratio: 1.3),
+  (min-resolution: 1.3dppx) {
+    /* Serving 2x image on Retina display */
+    background-image: url($image);
+    background-size: $width $height;
+  }
+}Usage
+.logo {
+background-image: url("img/logo.png");
+  @include retina("img/logo@2x.png", 100px, 21px);
+}Output
+.logo {
+  background-image: url("img/logo.png");
+}
+@media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+  .logo {
+    /* Serving HQ image on Retina display */
+    background-image: url("img/logo@2x.png");
+    background-size: 100px 21px;
+  }
+}
+The above example usage may not be perfect and you may add more rules for specifying width and height of the element to be optimized for retina screen.
+CSS3 Keyframes
+CSS3 keyframes can't be implemented with the vendor prefixing mixin mentioned above. The below mixin is meant to render keyframes correctly with the vendor prefixes:
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+
+  @keyframes #{$name} {
+    @content;
+  }
+}Usage
+@include keyframes(animate) {
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
+}Output
+@-webkit-keyframes animate {
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+@-moz-keyframes animate {
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+@keyframes animate {
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+Background Gradient
+Quick and simple SASS mixin to implement CSS linear gradients:
+
+@mixin gradient($start-color, $end-color, $orientation) {
+  background: $start-color;
+  @if $orientation == 'vertical' {
+    background: -webkit-linear-gradient(top, $start-color, $end-color);
+    background: linear-gradient(to bottom, $start-color, $end-color);
+  } @else if $orientation == 'horizontal' {
+    background: -webkit-linear-gradient(left, $start-color, $end-color);
+    background: linear-gradient(to right, $start-color, $end-color);
+  } @else {
+    background: -webkit-radial-gradient(center, ellipse cover, $start-color, $end-color);
+    background: radial-gradient(ellipse at center, $start-color, $end-color);
+  }
+}Usage
+.gradient {
+  @include gradient(#07c, #06f, vertical);
+}Output
+.gradient {
+  background: #07c;
+  background: -webkit-linear-gradient(top, #07c, #06f);
+  background: linear-gradient(to bottom, #07c, #06f);
+}
+@font-face
+@mixin font-face($font-name, $file-name, $weight: normal, $style: normal) {
+  @font-face {
+    font-family: quote($font-name);
+    src: url($file-name + '.eot');
+    src: url($file-name + '.eot?#iefix')  format('embedded-opentype'),
+    url($file-name + '.woff') format('woff'),
+    url($file-name + '.ttf')  format('truetype'),
+    url($file-name + '.svg##{$font-name}')  format('svg');
+    font-weight: $weight;
+    font-style: $style;
+  }
+}Usage
+@include font-face("MyFont", "path/to/MyFont", $style: normal, $weight: normal);Output
+@font-face {
+  font-family: "MyFont";
+  src: url("path/to/MyFont.eot");
+  src: url("path/to/MyFont.eot?#iefix") format("embedded-opentype"), url("path/to/MyFont.woff") format("woff"), url("path/to/MyFont.ttf") format("truetype"), url("path/to/MyFont.svg#MyFont") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+Centering a block
+@mixin center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}Usage
+.wrapper {
+  @include center-block;
+}Output
+.wrapper {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+Vertical centering
+@mixin center-vertically {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include prefix(transform, translate(-50%, -50%), 'webkit' 'ms');
+}Usage
+.vc-box {
+  @include center-vertically;
+}Output
+.vc-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
